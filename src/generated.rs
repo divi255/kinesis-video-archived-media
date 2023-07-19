@@ -10,8 +10,10 @@
 //
 // =================================================================
 
+use log::info;
 use std::error::Error;
 use std::fmt;
+use std::sync::atomic;
 
 use async_trait::async_trait;
 use rusoto_core::credential::ProvideAwsCredentials;
@@ -25,6 +27,19 @@ use rusoto_core::signature::SignedRequest;
 use serde::{Deserialize, Serialize};
 use serde_json;
 /// <p>Describes the timestamp range and timestamp origin of a range of fragments.</p> <p>Fragments that have duplicate producer timestamps are deduplicated. This means that if producers are producing a stream of fragments with producer timestamps that are approximately equal to the true clock time, the clip will contain all of the fragments within the requested timestamp range. If some fragments are ingested within the same time range and very different points in time, only the oldest ingested collection of fragments are returned.</p>
+
+static DEBUG: atomic::AtomicBool = atomic::AtomicBool::new(false);
+
+#[inline]
+pub fn is_debug() -> bool {
+    DEBUG.load(atomic::Ordering::Relaxed)
+}
+
+#[inline]
+pub fn set_debug(mode: bool) {
+    DEBUG.store(mode, atomic::Ordering::Relaxed);
+}
+
 #[derive(Clone, Debug, Default, PartialEq, Serialize)]
 #[cfg_attr(feature = "deserialize_structs", derive(Deserialize))]
 pub struct ClipFragmentSelector {
@@ -807,6 +822,10 @@ impl KinesisVideoArchivedMedia for KinesisVideoArchivedMediaClient {
         request.set_payload(encoded);
         request.set_hostname(Some(data_endpoint));
 
+        if is_debug() {
+            info!("{:?}", request);
+        }
+
         let mut response = self
             .client
             .sign_and_dispatch(request)
@@ -844,6 +863,10 @@ impl KinesisVideoArchivedMedia for KinesisVideoArchivedMediaClient {
         request.set_payload(encoded);
         request.set_hostname(Some(data_endpoint));
 
+        if is_debug() {
+            info!("{:?}", request);
+        }
+
         let mut response = self
             .client
             .sign_and_dispatch(request)
@@ -876,6 +899,10 @@ impl KinesisVideoArchivedMedia for KinesisVideoArchivedMediaClient {
         let encoded = Some(serde_json::to_vec(&input).unwrap());
         request.set_payload(encoded);
         request.set_hostname(Some(data_endpoint));
+
+        if is_debug() {
+            info!("{:?}", request);
+        }
 
         let mut response = self
             .client
