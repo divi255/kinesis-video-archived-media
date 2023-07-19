@@ -823,7 +823,7 @@ impl KinesisVideoArchivedMedia for KinesisVideoArchivedMediaClient {
         request.set_hostname(Some(data_endpoint));
 
         if is_debug() {
-            info!("{:?}", request);
+            info!("{:?} {:?}", request, input);
         }
 
         let mut response = self
@@ -864,7 +864,7 @@ impl KinesisVideoArchivedMedia for KinesisVideoArchivedMediaClient {
         request.set_hostname(Some(data_endpoint));
 
         if is_debug() {
-            info!("{:?}", request);
+            info!("{:?} {:?}", request, input);
         }
 
         let mut response = self
@@ -901,7 +901,7 @@ impl KinesisVideoArchivedMedia for KinesisVideoArchivedMediaClient {
         request.set_hostname(Some(data_endpoint));
 
         if is_debug() {
-            info!("{:?}", request);
+            info!("{:?} {:?}", request, input);
         }
 
         let mut response = self
